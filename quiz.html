@@ -26,9 +26,10 @@
         <button id="nextButton" onclick="goNext()" >Next</button>
       </div>
     </div>
-
+    <script src="configuration.js"></script>
     <script>
-      let host = "http://localhost:8080";
+      let host = getHost();
+      const headers = {'Authorization': `Bearer ${configuration.token()}`};
       const urlParams = new URLSearchParams(window.location.search);
       const id = urlParams.get("id");
       let quiz = null;
@@ -42,7 +43,7 @@
       startTheQuiz();
 
       async function startTheQuiz() {
-        let response = await fetch(host + "/quizzes/" + id);
+        let response = await fetch(host + "/quizzes/" + id, {headers});
         quiz = await response.json();
         await displayTheQuestion(0);
       }
@@ -114,7 +115,7 @@
         let div = document.createElement("div");
         div.className = "card";        
         let innerHtml = `
-         <img src="http://localhost:8080/questions/${question.id}/image" alt="question" style="width:100%">
+         <img src="${host}/questions/${question.id}/image" alt="question" style="width:100%">
          <div class="container">
            <h4><b>${question.id}</b></h4>
            <p>${question.description}</p>
