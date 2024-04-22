@@ -88,7 +88,7 @@
           const innerHtml = `
               <div class="container">
                   <h4><b>${question.id}</b></h4> 
-                  <img src="${imageUrl}" alt="question" style="width:100%">
+                  <img id="i${question.id}" alt="question" style="width:100%">
                   <p>${question.description}</p>
                   <form>
                       <input type="radio" id="q${question.id}OptionA" name="q${question.id}Answer" value="A">
@@ -103,6 +103,24 @@
               </div>`;
           div.innerHTML = innerHtml;
           list.appendChild(div);
+
+          let imgElem = document.getElementById(`i${question.id}`);
+          fetch(`${host}/questions/${question.id}/image`,{
+            headers : {'Authorization': `Bearer ${configuration.token()}`}
+          })
+          .then((response) => {
+            if(!response.ok){
+              console.log("Error getting image");
+            }
+            return response.blob();
+          })
+          .then((blob) => {
+            let imageUrl = URL.createObjectURL(blob);
+            imgElem.src = imageUrl;
+          })
+          .catch((error) =>{
+            console.error("There was an error with fetching the image ", error);
+          })
         }
     }
           
